@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Values.config.name }} 
+  name: api-config
 data:
-  PORT: {{ .Values.config.data.PORT }} 
-  DBPORT: {{ .Values.config.data.DBPORT }} 
-  DBHOST: {{ .Values.config.data.DBHOST }}          
-  DB: {{ .Values.config.data.DB }} 
+  PORT: "3001"
+  DBPORT: "3306"
+  DBHOST: mysql         
+  DB: "kaizen"

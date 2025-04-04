@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Values.config.name }}
+  name: web-config
 data:
-  PORT: {{ .Values.config.data.port }}
-  API_HOST: {{ .Values.config.data.apiHost }}
+  PORT: "3000"
+  API_HOST: "http://api-api:3001"

@@ -1,5 +1,5 @@
 resource "aws_security_group" "allow_all_inbound" {
-  name        = "allow_tls"
+  name        = "all_inbound"
   description = var.all_inbound_description
 
   ingress {

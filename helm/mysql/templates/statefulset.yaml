@@ -1,46 +1,46 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ .Values.statefulset.name }}
+  name: mysql
 spec:
-  serviceName: {{ .Values.statefulset.serviceName }}
-  replicas: {{ .Values.statefulset.replicas }}
+  serviceName: mysql-service
+  replicas: 1
   selector:
     matchLabels:
-      app: {{ .Values.statefulset.selector.matchLabels.app }}
+      app: mysql
   template:
     metadata:
       labels:
-        app: {{ .Values.statefulset.template.metadata.labels.app }}
+        app: mysql
     spec:
       containers:
-        - name: {{ .Values.statefulset.template.spec.containers.name }}
-          image: mysql:8.0 # ?
+        - name: mysql
+          image: mysql:8.0
           ports:
-            - containerPort: {{ .Values.statefulset.template.spec.containers.ports.containerPort }}
-              name: {{ .Values.statefulset.template.spec.containers.ports.name }}
+            - containerPort: 3306
+              name: mysql
           env:
           - name: MYSQL_ROOT_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.statefulset.template.spec.containers.env.root_valueFrom.secretKeyRef.name }}
-                key: {{ .Values.statefulset.template.spec.containers.env.root_valueFrom.secretKeyRef.key }}
+                name: api-secret
+                key: DBPASS
           - name: MYSQL_USER
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.statefulset.template.spec.containers.env.user_valueFrom.secretKeyRef.name }}
-                key: {{ .Values.statefulset.template.spec.containers.env.user_valueFrom.secretKeyRef.name }}
+                name: api-secret
+                key: DBUSER
           - name: MYSQL_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.statefulset.template.spec.containers.env.pass_valueFrom.secretKeyRef.name }}
-                key: {{ .Values.statefulset.template.spec.containers.env.pass_valueFrom.secretKeyRef.name }}
+                name: api-secret
+                key: DBPASS
           - name: MYSQL_DATABASE
-            value: {{ .Values.statefulset.template.spec.containers.env.db_value }}
+            value: "kaizen"
           volumeMounts:
-            - name: {{ .Values.statefulset.template.spec.containers.volumeMounts.name }}
-              mountPath: {{ .Values.statefulset.template.spec.containers.volumeMounts.mountPath }}
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
       volumes:
-        - name: {{ .Values.statefulset.template.spec.volumes.name }}
+        - name: mysql-storage
           persistentVolumeClaim:
-            claimName: {{ .Values.statefulset.template.spec.volumes.persistentVolumeClaim.claimName }}
+            claimName: mysql-pvc

@@ -26,7 +26,7 @@ function ansible() {
 function generate_cluster() {
   cd ../terraform-cluster/
   terraform init
-  terraform apply --auto-approve -var-file=aws_output.json
+  terraform apply --auto-approve
 }
 
 # Review
@@ -49,7 +49,6 @@ function install_helm() {
   cd ../../helm
   wget https://get.helm.sh/helm-v3.17.2-linux-amd64.tar.gz
   tar zxf helm-v3.17.2-linux-amd64.tar.gz
-  cd linux-amd64
   sudo mv linux-amd64/helm /usr/local/bin
   rm -rf linux-amd64 helm-v3.17.2-linux-amd64.tar.gz 
 }
@@ -66,4 +65,5 @@ ansible
 generate_cluster
 rke_up
 create_local_storage
+install_helm
 deploy_app
