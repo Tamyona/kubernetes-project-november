@@ -1,54 +1,46 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mysql
+  name: {{ .Values.statefulset.name }}
 spec:
-  serviceName: mysql-service
-  replicas: 1
+  serviceName: {{ .Values.statefulset.serviceName }}
+  replicas: {{ .Values.statefulset.replicas }}
   selector:
     matchLabels:
-      app: mysql
+      app: {{ .Values.statefulset.selector.matchLabels.app }}
   template:
     metadata:
       labels:
-        app: mysql
+        app: {{ .Values.statefulset.template.metadata.labels.app }}
     spec:
-      # initContainers:
-      # - name: init-mysql
-      #   image: busybox
-      #   command:
-      #   - sh
-      #   - -c
-      #   - rm -rf /var/lib/mysql/*
-      #   # - "[ -d /var/lib/mysql/mysql ] || rm -rf /var/lib/mysql/*"
       containers:
-        - name: mysql
-          image: mysql:8.0
+        - name: {{ .Values.statefulset.template.spec.containers.name }}
+          image: mysql:8.0 # ?
           ports:
-            - containerPort: 3306
-              name: mysql
+            - containerPort: {{ .Values.statefulset.template.spec.containers.ports.containerPort }}
+              name: {{ .Values.statefulset.template.spec.containers.ports.name }}
           env:
           - name: MYSQL_ROOT_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: api-secret
-                key: DBPASS
+                name: {{ .Values.statefulset.template.spec.containers.env.root_valueFrom.secretKeyRef.name }}
+                key: {{ .Values.statefulset.template.spec.containers.env.root_valueFrom.secretKeyRef.key }}
           - name: MYSQL_USER
             valueFrom:
               secretKeyRef:
-                name: api-secret
-                key: DBUSER
+                name: {{ .Values.statefulset.template.spec.containers.env.user_valueFrom.secretKeyRef.name }}
+                key: {{ .Values.statefulset.template.spec.containers.env.user_valueFrom.secretKeyRef.name }}
           - name: MYSQL_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: api-secret
-                key: DBPASS
+                name: {{ .Values.statefulset.template.spec.containers.env.pass_valueFrom.secretKeyRef.name }}
+                key: {{ .Values.statefulset.template.spec.containers.env.pass_valueFrom.secretKeyRef.name }}
           - name: MYSQL_DATABASE
-            value: "kaizen"
+            value: {{ .Values.statefulset.template.spec.containers.env.db_value }}
           volumeMounts:
-            - name: mysql-storage
-              mountPath: /var/lib/mysql
+            - name: {{ .Values.statefulset.template.spec.containers.volumeMounts.name }}
+              mountPath: {{ .Values.statefulset.template.spec.containers.volumeMounts.mountPath }}
       volumes:
-        - name: mysql-storage
+        - name: {{ .Values.statefulset.template.spec.volumes.name }}
           persistentVolumeClaim:
-            claimName: mysql-pvc
+            claimName: {{ .Values.statefulset.template.spec.volumes.persistentVolumeClaim.claimName }}

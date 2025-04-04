@@ -7,17 +7,17 @@ provider "helm" {
 resource "helm_release" "web" {
   name       = "web"
   chart      = "../helm/web"
-#   values     = [file("${path.module}/../charts/web/values.yaml")]
+  values     = "../helm/web"
 }
 
 resource "helm_release" "api" {
   name       = "api"
   chart      = "../helm/api"
-#   values     = [file("${path.module}/../charts/api/values.yaml")]
+  values     = "../helm/api"
 }
 
 resource "helm_release" "mysql" {
   name       = "mysql"
   chart      = "../helm/mysql"
-#   values     = [file("${path.module}/../charts/mysql/values.yaml")]
+  values     = "../helm/mysql"
 }

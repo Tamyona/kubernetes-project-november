@@ -1,1 +1,51 @@
+deployment:
+  name: "web-api"
+  replicas: 3
+  # image: "ailitik/web_api:1.0.0"
+  containerPort: 3000
+  healthCheckPath: "/health"
+  readinessProbe:
+    initialDelaySeconds: 5
+    periodSeconds: 10
+  livenessProbe:
+    initialDelaySeconds: 10
+    periodSeconds: 15
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "256Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+  labels:
+    app: "web-api"
+  selector:
+    matchLabels:
+      app: "web-api"
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  env:
+    apiHostConfigMap:
+      name: "web-config"
+      key: "API_HOST"
+    port: "3000"
 
+YAML
+
+service:
+  name: "web-api"
+  type: "NodePort"
+  port: 80
+  targetPort: 3000
+  protocol: "TCP"
+  selectorLabels:
+    app: "web-api"
+
+config:
+  name: "web-config"
+  data:
+    port: "3000"
+    apiHost: "http://api-api:3001"

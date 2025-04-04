@@ -1,56 +1,56 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: web-api
+  name: {{ .Values.deployment.name }}
   labels:
-    app: web-api
+    app: {{ .Values.deployment.labels.app }}
 spec:
-  replicas: 3
+  replicas: {{ .Values.deployment.replicas }}
   selector:
     matchLabels:
-      app: web-api
+      app: {{ .Values.deployment.selector.matchLabels.app }}
   template:
     metadata:
       labels:
-        app: web-api
+        app: {{ .Values.deployment.labels.app }}
     spec:
       strategy:
-        type: RollingUpdate
+        type: {{ .Values.deployment.strategy.type }}
         rollingUpdate:
-          maxUnavailable: 1
-          maxSurge: 1
+          maxUnavailable: {{ .Values.deployment.strategy.rollingUpdate.maxUnavailable }}
+          maxSurge: {{ .Values.deployment.strategy.rollingUpdate.maxSurge }}
       containers:
-      - name: web-api
+      - name: {{ .Values.deployment.name }}
         image: ailitik/web_api:1.0.0
         ports:
-        - containerPort: 3000
+        - containerPort: {{ .Values.deployment.containerPort }}
         env:
         - name: API_HOST
           valueFrom:
             configMapKeyRef:
-              name: web-config
-              key: API_HOST            
+              name: {{ .Values.deployment.env.apiHostConfigMap.name }}
+              key: {{ .Values.deployment.env.apiHostConfigMap.key }}            
         - name: PORT
-          value: "3000"
+          value: {{ .Values.deployment.env.port }}
         resources:
           requests:
-            cpu: "250m"
-            memory: "256Mi"
+            cpu: {{ .Values.deployment.resources.requests.cpu }}
+            memory: {{ .Values.deployment.resources.requests.memory }}
           limits:
-            cpu: "500m"
-            memory: "512Mi"
+            cpu: {{ .Values.deployment.resources.limits.cpu }}
+            memory: {{ .Values.deployment.resources.limits.memory }}
         readinessProbe:
           httpGet:
-            path: /health
-            port: 3000
-          initialDelaySeconds: 5
-          periodSeconds: 10
+            path: {{ .Values.deployment.healthCheckPath }}
+            port: {{ .Values.deployment.containerPort }}
+          initialDelaySeconds: {{ .Values.deployment.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.deployment.readinessProbe.periodSeconds }}
         livenessProbe:
           httpGet:
-            path: /health
-            port: 3000
-          initialDelaySeconds: 10
-          periodSeconds: 15
+            path: {{ .Values.deployment.healthCheckPath }}
+            port: {{ .Values.deployment.containerPort }}
+          initialDelaySeconds: {{ .Values.deployment.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.deployment.livenessProbe.periodSeconds }}
         # startupProbe:
         #   httpGet:
         #     path: /health
