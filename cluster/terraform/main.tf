@@ -1,5 +1,5 @@
 provider "aws" {
-    region = var.region
+    region = "us-east-2" # var.region
 }
 
 resource "aws_key_pair" "rke_key" {
