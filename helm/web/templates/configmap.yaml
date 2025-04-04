@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: web-config
+data:
+  PORT: "3000"
+  API_HOST: "http://api-api:3001"

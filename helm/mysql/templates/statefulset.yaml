@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+spec:
+  serviceName: mysql-service
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      # initContainers:
+      # - name: init-mysql
+      #   image: busybox
+      #   command:
+      #   - sh
+      #   - -c
+      #   - rm -rf /var/lib/mysql/*
+      #   # - "[ -d /var/lib/mysql/mysql ] || rm -rf /var/lib/mysql/*"
+      containers:
+        - name: mysql
+          image: mysql:8.0
+          ports:
+            - containerPort: 3306
+              name: mysql
+          env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: api-secret
+                key: DBPASS
+          - name: MYSQL_USER
+            valueFrom:
+              secretKeyRef:
+                name: api-secret
+                key: DBUSER
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: api-secret
+                key: DBPASS
+          - name: MYSQL_DATABASE
+            value: "kaizen"
+          volumeMounts:
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-storage
+          persistentVolumeClaim:
+            claimName: mysql-pvc

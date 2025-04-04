@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-api
+  labels:
+    app: web-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web-api
+  template:
+    metadata:
+      labels:
+        app: web-api
+    spec:
+      strategy:
+        type: RollingUpdate
+        rollingUpdate:
+          maxUnavailable: 1
+          maxSurge: 1
+      containers:
+      - name: web-api
+        image: ailitik/web_api:1.0.0
+        ports:
+        - containerPort: 3000
+        env:
+        - name: API_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: web-config
+              key: API_HOST            
+        - name: PORT
+          value: "3000"
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 15
+        # startupProbe:
+        #   httpGet:
+        #     path: /health
+        #     port: 3000
+        #   failureThreshold: 30
+        #   periodSeconds: 5
+        

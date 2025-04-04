@@ -1,0 +1,13 @@
+- hosts: bastion
+  become: yes
+  roles:
+    - install_docker
+    - install_rke
+    # - install_kubernetes
+    # - create_cluster
+
+- hosts: master,workers
+  become: yes
+  roles:
+    - install_docker
+    - create_rke_user
