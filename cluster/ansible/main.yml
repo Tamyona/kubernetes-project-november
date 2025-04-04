@@ -4,7 +4,6 @@
     - install_docker
     - install_rke
     # - install_kubernetes
-    # - create_cluster
 
 - hosts: master,workers
   become: yes

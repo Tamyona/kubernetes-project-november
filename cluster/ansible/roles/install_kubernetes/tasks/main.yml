@@ -1,0 +1,50 @@
+- name: Install Kubernetes Dependencies 
+  ansible.builtin.apt:
+    name: "{{ kubernetes_dependencies }}"
+    state: present
+    update_cache: yes
+
+- name: Ensure /etc/apt/keyrings directory exists
+  ansible.builtin.file:
+    path: "{{ kubernetes_keyrings_dir }}"
+    state: directory
+    mode: "{{ kubernetes_keyrings_dir_mode }}"
+
+- name: Download Kubernetes GPG key
+  ansible.builtin.get_url:
+    url: "{{ kubernetes_gpg_key_url }}"
+    dest: "{{ kubernetes_gpg_key_filename }}"
+    mode: "{{ kubernetes_gpg_key_download_mode }}"
+
+- name: Convert Kubernetes GPG key to dearmored format
+  ansible.builtin.command:
+    cmd: "{{ dearmor_cmd }}"
+    creates: "{{ kubernetes_apt_keyring_filename }}"   # Prevents redundant execution
+
+- name: Set permissions for Kubernetes GPG key
+  ansible.builtin.file:
+    path: "{{ kubernetes_apt_keyring_filename }}"
+    mode: "{{ kubernetes_apt_keyring_file_mode }}"
+
+- name: Clean up temporary key file
+  ansible.builtin.file:
+    path: "{{ kubernetes_gpg_key_tmp_path }}"
+    state: absent
+
+- name: Add the repository to Apt sources using tee
+  ansible.builtin.shell:
+    cmd: "{{ add_repo_cmd }}"
+
+- name: Add Kubernetes APT repository
+  ansible.builtin.copy:
+    dest: "{{ kubernetes_repo_file_dest }}"
+    content: "{{ kubernetes_repo_file_content }}"
+    owner: "{{ kubernetes_repo_file_owner }}"
+    group: "{{ kubernetes_repo_file_group }}"
+    mode: "{{ kubernetes_repo_file_mode }}"
+
+- name: Install kubectl
+  ansible.builtin.apt:
+    name: "{{ kubectl_package_name }}"
+    state: present
+    update_cache: yes

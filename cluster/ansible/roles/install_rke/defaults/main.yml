@@ -1,0 +1,6 @@
+# defaults file for rke
+destination: /usr/local/bin/rke
+mode: 0755
+
+
+

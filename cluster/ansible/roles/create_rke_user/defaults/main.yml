@@ -1,0 +1,21 @@
+# DEFAULTS FILE FOR RKE_USER #
+
+# Ensure rke user exists
+rke_user: "rke"
+rke_user_groups: "docker"
+rke_user_shell: "/bin/bash"
+
+# Ensure rke group exists
+rke_group: "rke"
+
+# Ensure .ssh directory exists
+rke_user_ssh: /home/rke/.ssh
+rke_user_home_mode: 0700
+
+
+# Ensure authorized_keys file exists
+authorizes_keys_path: /home/rke/.ssh/authorized_keys
+authorizes_keys_mode: "0600"
+
+# Set ownership of /home/rke recursively
+rke_user_home: /home/rke

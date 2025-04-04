@@ -1,3 +1,4 @@
+# AMI
 data "aws_ami" "ubuntu" {
   most_recent = true
 
@@ -13,54 +14,58 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # Canonical
 }
 
+# Master Instance
 resource "aws_instance" "master" {
-  ami           = data.aws_ami.ubuntu.id
-  instance_type = "t2.medium"
-  key_name = aws_key_pair.rke_key.key_name
-  security_groups = [aws_security_group.allow_tls.name]
+  ami             = data.aws_ami.ubuntu.id
+  instance_type   = var.instance_type
+  key_name        = aws_key_pair.rke_key.key_name
+  security_groups = [aws_security_group.allow_all_inbound.name]
   
   root_block_device {
-    volume_size = 30  # Set root volume to 30 GiB
-    volume_type = "gp3"  # Use gp3 for better performance (or gp2 for standard SSD)
+    volume_size = var.root_volume_size  # Set root volume to 30 GiB
+    volume_type = var.root_volume_type  # Use gp3 for better performance (or gp2 for standard SSD)
   }
   
   tags = {
-    Name = "master"
+    Name = var.master_tag_name
   }
 }
 
+# Worker Instance
 resource "aws_instance" "worker1" {
-  ami           = data.aws_ami.ubuntu.id
-  instance_type = "t2.medium"
-  key_name = aws_key_pair.rke_key.key_name
-  security_groups = [aws_security_group.allow_tls.name]
+  ami             = data.aws_ami.ubuntu.id
+  instance_type   = var.instance_type
+  key_name        = aws_key_pair.rke_key.key_name
+  security_groups = [aws_security_group.allow_all_inbound.name]
   
   root_block_device {
-    volume_size = 30  # Set root volume to 30 GiB
-    volume_type = "gp3"  # Use gp3 for better performance (or gp2 for standard SSD)
+    volume_size = var.root_volume_size  # Set root volume to 30 GiB
+    volume_type = var.root_volume_type  # Use gp3 for better performance (or gp2 for standard SSD)
   }
   
   tags = {
-    Name = "worker1"
+    Name = var.worker1_tag_name
   }
 }
 
+# Worker Instance
 resource "aws_instance" "worker2" {
-  ami           = data.aws_ami.ubuntu.id
-  instance_type = "t2.medium"
-  key_name = aws_key_pair.rke_key.key_name
-  security_groups = [aws_security_group.allow_tls.name]
+  ami             = data.aws_ami.ubuntu.id
+  instance_type   = var.instance_type
+  key_name        = aws_key_pair.rke_key.key_name
+  security_groups = [aws_security_group.allow_all_inbound.name]
   
   root_block_device {
-    volume_size = 30  # Set root volume to 30 GiB
-    volume_type = "gp3"  # Use gp3 for better performance (or gp2 for standard SSD)
+    volume_size = var.root_volume_size  # Set root volume to 30 GiB
+    volume_type = var.root_volume_type  # Use gp3 for better performance (or gp2 for standard SSD)
   }
   
   tags = {
-    Name = "worker2"
+    Name = var.worker2_tag_name
   }
 }
 
+# Outputs - should we use separate file
 output master_ip {
     value = aws_instance.master.public_ip
 }

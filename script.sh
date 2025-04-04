@@ -36,12 +36,14 @@ function ansible() {
   ansible-playbook main.yml 
 }
 
+# Review
 function generate_cluster() {
   cd ../terraform-cluster/
   terraform init
   terraform apply --auto-approve -var-file=aws_output.json
 }
 
+# Review
 function rke_up() {
   
   cd ../terraform-cluster/
@@ -62,7 +64,6 @@ function install_helm() {
   cd linux-amd64
   sudo mv linux-amd64/helm /usr/local/bin
   rm -rf linux-amd64 helm-v3.17.2-linux-amd64.tar.gz 
-
 }
 
 function deploy_app() {

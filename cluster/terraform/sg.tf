@@ -1,31 +1,23 @@
-resource "aws_security_group" "allow_tls" {
+resource "aws_security_group" "allow_all_inbound" {
   name        = "allow_tls"
-  description = "Allow TLS inbound traffic"
+  description = var.all_inbound_description
 
   ingress {
-    description = "TLS from VPC"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    description = "All Inbound Traffic"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"    # -1 meaning all protocols
-    cidr_blocks = ["0.0.0.0/0"]
+    description = var.all_inbound_description
+    from_port   = var.all_inbound_port
+    to_port     = var.all_inbound_port
+    protocol    = var.all_inbound_protocol    # -1 meaning all protocols
+    cidr_blocks = var.all_inbound_cidr_blocks
   }
 
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = var.all_inbound_port
+    to_port     = var.all_inbound_port
+    protocol    = var.all_inbound_protocol    
+    cidr_blocks = var.all_inbound_cidr_blocks
   }
 
   tags = {
-    Name = "allow_tls"
+    Name = "allow_all_inbound"
   }
 }

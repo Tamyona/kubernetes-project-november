@@ -1,0 +1,41 @@
+# DEFAULTS FILE FOR KUBECTL #
+
+# Install Kubernetes Dependencies
+kubernetes_dependencies:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - gnupg
+
+# Ensure /etc/apt/keyrings directory exists
+kubernetes_keyrings_dir: "/etc/apt/keyrings"
+kubernetes_keyrings_dir_mode: "0755"
+
+# Download Kubernetes GPG key
+kubernetes_gpg_key_url: https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key
+kubernetes_gpg_key_filename: /tmp/kubernetes-apt-keyring.gpg
+kubernetes_gpg_key_download_mode: "0644"
+
+# Convert Kubernetes GPG key to dearmored format
+dearmor_cmd: gpg --dearmor --output /etc/apt/keyrings/kubernetes-apt-keyring.gpg /tmp/kubernetes-apt-keyring.gpg
+kubernetes_apt_keyring_filename: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+# Set permissions for Kubernetes GPG key
+kubernetes_apt_keyring_filename: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+kubernetes_apt_keyring_file_mode: "0644"
+
+# Clean up temporary key file
+kubernetes_gpg_key_tmp_path: /tmp/kubernetes-apt-keyring.gpg
+
+# Add the repository to Apt sources using tee
+add_repo_cmd: echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+# Add Kubernetes APT repository
+kubernetes_repo_file_dest: /etc/apt/sources.list.d/kubernetes.list
+kubernetes_repo_file_content: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /"
+kubernetes_repo_file_owner: root
+kubernetes_repo_file_group: root
+kubernetes_repo_file_mode: "0644"
+
+# Install kubectl
+kubectl_package_name: kubectl

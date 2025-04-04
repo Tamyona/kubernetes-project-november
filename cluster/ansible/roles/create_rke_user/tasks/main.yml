@@ -1,42 +1,42 @@
 - name: Ensure rke user exists
   ansible.builtin.user:
-    name: rke
-    groups: docker
+    name: "{{ rke_user }}"
+    groups: "{{ rke_user_groups }}"
     state: present
     create_home: yes
-    shell: /bin/bash
+    shell: "{{ rke_user_shell }}"
 
 - name: Ensure rke group exists
   ansible.builtin.group:
-    name: rke
+    name: "{{ rke_group }}"
     state: present
 
 - name: Ensure .ssh directory exists
   ansible.builtin.file:
-    path: /home/rke/.ssh
+    path: "{{ rke_user_ssh }}"
     state: directory
-    owner: rke
-    group: rke
-    mode: "0700"
+    owner: "{{ rke_user }}"
+    group: "{{ rke_user }}"
+    mode: "{{ rke_user_home_mode }}"
 
 - name: Ensure authorized_keys file exists
   ansible.builtin.file:
-    path: /home/rke/.ssh/authorized_keys
+    path: "{{ authorizes_keys_path }}"
     state: touch
-    owner: rke
-    group: rke
-    mode: "0600"
+    owner: "{{ rke_user }}"
+    group: "{{ rke_user }}"
+    mode: "{{ authorizes_keys_mode }}"
 
 - name: Add public key to authorized_keys
   become: yes
   ansible.builtin.authorized_key:
-    user: rke
+    user: "{{ rke_user }}"
     state: present
     key: "{{ lookup('file', '/home/ubuntu/.ssh/id_rsa.pub') }}"
 
 - name: Set ownership of /home/rke recursively
   ansible.builtin.file:
-    path: /home/rke
-    owner: rke
-    group: rke
+    path: "{{ rke_user_home }}"
+    owner: "{{ rke_user }}"
+    group: "{{ rke_user }}"
     recurse: yes
