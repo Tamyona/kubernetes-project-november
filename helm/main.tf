@@ -4,20 +4,22 @@ provider "helm" {
   }
 }
 
-resource "helm_release" "web" {
-  name       = "web"
-  chart      = "../helm/web"
-  # values     = ["../helm/web/values.yaml"]
-}
-
 resource "helm_release" "api" {
   name       = "api"
-  chart      = "../helm/api"
-  # values     = ["../helm/api/values.yaml"]
+  chart      = "${path.module}/api"
+  values     = [file("${path.module}/api/values.yaml")]
 }
 
 resource "helm_release" "mysql" {
   name       = "mysql"
-  chart      = "../helm/mysql"
-  # values     = ["../helm/mysql/values.yaml"]
+  chart      = "${path.module}/mysql"
+  values     = [file("${path.module}/mysql/values.yaml")]
+  depends_on = [helm_release.api]
+}
+
+resource "helm_release" "web" {
+  name       = "web"
+  chart      = "${path.module}/web"
+  values     = [file("${path.module}/web/values.yaml")]
+  depends_on = [helm_release.mysql]
 }

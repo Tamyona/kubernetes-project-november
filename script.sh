@@ -22,22 +22,16 @@ function ansible() {
   ansible-playbook main.yml 
 }
 
-# Review
 function generate_cluster() {
   cd ../terraform-cluster/
   terraform init
   terraform apply --auto-approve
-}
 
-# Review
-function rke_up() {
-  
   cd ../terraform-cluster/
   sudo mkdir -p ~/.kube
   terraform output -raw kube_config > /tmp/kube_config_cluster.yml
   sudo mv /tmp/kube_config_cluster.yml ~/.kube/config
   kubectl get nodes
-
 }
 
 function create_local_storage() {
